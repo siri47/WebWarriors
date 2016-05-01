@@ -1,0 +1,97 @@
+Basic load test for images on the route /image : mkdir.png , File size : 104.2kb
+
+somdeep@somdeep-HP-Pavilion-15-Notebook-PC:~/Classes/Topics/WebWarriors/node$ ab -n 100 -c 10 http://localhost:9000/image
+This is ApacheBench, Version 2.3 <$Revision: 1528965 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient).....done
+
+
+Server Software:        
+Server Hostname:        localhost
+Server Port:            9000
+
+Document Path:          /image
+Document Length:        104185 bytes
+
+Concurrency Level:      10
+Time taken for tests:   0.136 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      10446300 bytes
+HTML transferred:       10418500 bytes
+Requests per second:    733.27 [#/sec] (mean)
+Time per request:       13.638 [ms] (mean)
+Time per request:       1.364 [ms] (mean, across all concurrent requests)
+Transfer rate:          74803.96 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+              Connect:        0    0   0.2      0       1
+              Processing:     6   13   4.9     12      24
+              Waiting:        6   10   3.9     10      20
+              Total:          6   13   5.0     12      24
+
+              Percentage of the requests served within a certain time (ms)
+              50%     12
+              66%     16
+              75%     18
+              80%     19
+              90%     21
+              95%     22
+              98%     23
+              99%     24
+              100%     24 (longest request)
+
+--------------------------------------------------------------------------------------------
+
+
+Basic load test for videos on the route /video : football.mp4 , File size : 752 MB (hence no concurrency and fewwer requests - 10 )
+
+
+
+somdeep@somdeep-HP-Pavilion-15-Notebook-PC:~/Classes/Topics/WebWarriors/node$ ab -n 10  http://localhost:9000/video
+This is ApacheBench, Version 2.3 <$Revision: 1528965 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient).....done
+
+
+Server Software:        
+Server Hostname:        localhost
+Server Port:            9000
+
+Document Path:          /video
+Document Length:        752722323 bytes
+
+Concurrency Level:      1
+Time taken for tests:   9.913 seconds
+Complete requests:      10
+Failed requests:        0
+Total transferred:      7527226070 bytes
+HTML transferred:       7527223230 bytes
+Requests per second:    1.01 [#/sec] (mean)
+Time per request:       991.334 [ms] (mean)
+Time per request:       991.334 [ms] (mean, across all concurrent requests)
+Transfer rate:          741506.64 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+              Connect:        0    0   0.0      0       0
+              Processing:   860  991  81.9   1017    1141
+              Waiting:        3    5   1.0      5       7
+              Total:        860  991  81.9   1017    1141
+
+              Percentage of the requests served within a certain time (ms)
+              50%   1017
+              66%   1028
+              75%   1030
+              80%   1070
+              90%   1141
+              95%   1141
+              98%   1141
+              99%   1141
+              100%   1141 (longest request)
+
