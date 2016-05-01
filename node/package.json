@@ -1,0 +1,19 @@
+{
+  "name": "webnode",
+  "version": "0.0.1",
+  "description": "web app testing on node",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "latest",
+    "cheerio": "latest",
+    "cookie-parser": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "mongodb": "latest",
+    "mongoose": "latest",
+    "morgan": "latest",
+    "request": "latest",
+    "when": "latest"
+    
+  }
+}
