@@ -10,6 +10,15 @@ Rails.application.routes.draw do
   #get 'person/create'
 
   #get 'person/get'
+  get 'images/index'
+
+  get 'images/new'
+
+  get 'images/show'
+
+  post 'images/create'
+
+  get 'images/showall'
 
   #get 'sessions/new'
 
