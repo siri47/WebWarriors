@@ -55,6 +55,11 @@ var dbUrl       = "mongodb://somdeep:root@ds041861.mlab.com:41861/warrior";
         res.render('login');
     });
 
+    app.get('/logincheck',function(req,res){
+        
+        res.render('success');
+    });
+
 
     app.listen(port, function(){
        console.log('listening on port', port);
