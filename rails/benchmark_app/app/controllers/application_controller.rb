@@ -5,12 +5,9 @@ class ApplicationController < ActionController::Base
 
   def current_user
   	@current_user ||= User.find(session[:user_id]) if session[:user_id]
-    @uname = @current_user.user_name
-    return @current_user
   end
   helper_method :current_user
-  helper_method :uname
-
+  
   def authorize
   	redirect_to :controller => 'sessions', :action => 'new' unless current_user
   end

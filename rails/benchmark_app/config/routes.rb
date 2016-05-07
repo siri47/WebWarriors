@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  get 'data/write'
+
+  get 'data/read'
+
+  get 'data/write'
+
+  get 'data/read'
+
   #get 'person/new'
 
   #get 'person/create'

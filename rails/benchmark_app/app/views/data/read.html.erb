@@ -1,0 +1,9 @@
+<h1>Data#read</h1>
+<p>Find me in app/views/data/read.html.erb</p>
+
+<% if @dumps_from_db %>
+	<% @dumps_from_db.each do |dump| %>
+		<%= dump =%>
+		<br />
+	<% end %>
+<% end %>
