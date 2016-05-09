@@ -1,0 +1,5 @@
+<h1><%= @var %></h1>
+<%= form_tag({action: :upvideo}, multipart: true) do %>
+    <%= file_field_tag 'video' %>
+    <%= submit_tag %>
+<% end %>
