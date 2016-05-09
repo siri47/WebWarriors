@@ -54,6 +54,12 @@ GEM
     bson_ext (1.5.1)
     builder (3.2.2)
     byebug (8.2.5)
+    carrierwave (0.11.2)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+      json (>= 1.7)
+      mime-types (>= 1.16)
+      mimemagic (>= 0.3.0)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.8)
@@ -174,6 +180,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bson_ext
   byebug
+  carrierwave
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
