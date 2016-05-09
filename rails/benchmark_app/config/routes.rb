@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   get 'data/write'
 
   get 'data/read'
@@ -18,15 +19,13 @@ Rails.application.routes.draw do
   #get 'person/create'
 
   #get 'person/get'
-  get 'images/index'
+  get 'upload/newimage'
 
-  get 'images/new'
+  post 'upload/upimage'
 
-  get 'images/show'
-
-  post 'images/create'
-
-  get 'images/showall'
+  get 'upload/newvideo'
+  
+  post 'upload/upvideo'
 
   #get 'sessions/new'
 
