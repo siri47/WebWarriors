@@ -31,8 +31,6 @@ Rails.application.routes.draw do
 
   get 'upload/encrypt'
 
-  get 'upload/decrypt'
-
   #get 'sessions/new'
 
   #get 'sessions/create'

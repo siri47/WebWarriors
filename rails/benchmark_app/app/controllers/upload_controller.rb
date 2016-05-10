@@ -44,41 +44,16 @@ class UploadController < ApplicationController
   end
 
   def encrypt
-    begin
-      entries = Dir.glob("#{@@tmp_path}/*")
-      entries.each do |entry|
-        if entry.include? ".jpg" or entry.include? ".png"
-          data = File.open(entry, "r") {|file| file.read() }
-          cipher = aes_encrypt(data, 1, "")
-          # remove old file
-          FileUtils.rm(entry)
-          # write ciphertext
-          File.open(entry, "wb") {|file| file.write(cipher) }
-        end
+      filename = "/home/ubuntu/software/WebWarriors/rails/benchmark_app/app/assets/images/mkdir.png"
+      data = File.open(filename, "r") {|file| file.read() }
+      count = 10000
+      plain = nil
+      count.times do |i|
+        cipher = aes_encrypt(data, 1, "")
+        plain = aes_decrypt(cipher, 1, "")
       end
-    rescue
-
-    end
-    @success = true
-  end
-
-  def decrypt
-    begin
-      entries = Dir.glob("#{@@tmp_path}/*")
-      entries.each do |entry|
-        if entry.include? ".jpg" or entry.include? ".png"
-          data = File.binread(entry)
-          plaintext = aes_decrypt(data, 1, "")
-          # remove old file
-          FileUtils.rm(entry)
-          # write plaintext
-          File.open(entry, "wb") {|file| file.write(plaintext) }
-        end
-      end
-    rescue
-
-    end
-    @success = true
+      File.open("/home/ubuntu/software/WebWarriors/rails/benchmark_app/app/assets/images/op.png", "wb") {|file| file.write(plain) }
+      @success = true
   end
 
   private
@@ -106,13 +81,13 @@ class UploadController < ApplicationController
             cipher = OpenSSL::Cipher::AES.new(@@shared_key_size, :ECB)
             cipher.padding = 0
         else
-            cipher = OpenSSL::Cipher.new('aes-256-cbc')
+            cipher = OpenSSL::Cipher.new('aes-128-cbc')
             cipher.iv = @@shared_iv
             padded_plaintext = pkcs7_pad(plaintext)
             cipher.padding = 0
         end
         cipher.encrypt
-        cipher.key = @@shared_key+@@shared_key 
+        cipher.key = @@shared_key 
         if key.length > 0
             cipher.key = key
         end
@@ -125,13 +100,13 @@ class UploadController < ApplicationController
             cipher = OpenSSL::Cipher::AES.new(@@shared_key_size, :ECB)
             cipher.padding = 0
         else
-            cipher = OpenSSL::Cipher.new('aes-256-cbc')
+            cipher = OpenSSL::Cipher.new('aes-128-cbc')
             cipher.iv = @@shared_iv
             cipher.padding = 0
             #puts "dec length: #{ciphertext.length}"
         end
         cipher.decrypt
-        cipher.key = @@shared_key + @@shared_key
+        cipher.key = @@shared_key
         if key.length > 0
             cipher.key = key
         end
