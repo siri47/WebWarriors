@@ -39,9 +39,12 @@ $uncrypt=aes128_cbc_decrypt($key,$crypt,$iv);
 
 
 
-file_put_contents('new.png', $uncrypt);
+//file_put_contents('new.png', $uncrypt);
 
 }
+
+file_put_contents('new.png', $uncrypt);
+
 
 
 function aes128_cbc_encrypt($key, $data, $iv) {
