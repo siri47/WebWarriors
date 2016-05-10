@@ -1,13 +1,16 @@
 
-from flask import Flask,request, render_template, g, session,redirect, Response
+from flask import Flask,request, render_template, g, session,redirect, Response,send_file
 from mongokit import Connection, Document
 import os,sys
 from flask import Flask, request, redirect, url_for
 from werkzeug import secure_filename
+from Crypto.Cipher import AES
 
 UPLOAD_FOLDER = '/Users/Siri/Documents/cn'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
+ecb_key = "1234567891234567"
+imagepath = '/Users/Siri/Documents/ms/ColumbiaSpring/TopicsSE/project/test/mkdir.png'
+videopath = '/Users/Siri/Documents/ms/ColumbiaSpring/TopicsSE/project/test/sample.mp4'
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -25,16 +28,6 @@ app.config.from_object(__name__)
 connection = Connection(app.config['MONGODB_HOST'],
                         app.config['MONGODB_PORT'])
 
-"""@app.before_request
-def before_request():
-    g.db = connect_db()
-
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()"""
-
 def max_length(length):
     def validate(value):
         if len(value) <= length:
@@ -45,9 +38,9 @@ def max_length(length):
 
 class Person(Document):
     structure = {
-        'Name': unicode,
-        'email': unicode,
-        'location':unicode,
+        'name': basestring,
+        'email': basestring,
+        'location':basestring,
     }
     use_dot_notation = True
     def __repr__(self):
@@ -56,9 +49,9 @@ class Person(Document):
 #Schema for security form
 class UserDetails(Document):
     structure = {
-        'name': unicode,
+        'name': basestring,
         'email': basestring,
-        'location':unicode,
+        'location':basestring,
         'ssn' : basestring,
     }
     use_dot_notation = True
@@ -79,15 +72,33 @@ class webUser(Document):
 def hello():
     return "Hello World!"
 
+@app.route("/dataView")
+def view():
+    connection.register([Person])
+    collection = connection['test1'].person 
+    return str(list(collection.find()))
+ 
+@app.route("/dataAdd")
+def displayPersons():
+    # Add some rows
+    connection.register([Person])
+    collection = connection['test1'].person    
+    for i in range(1001):
+        pers = collection.Person()
+        pers['name'] = 'Nirma'
+        pers['email'] = 'admin@localhost'
+        pers['location'] = 'nyc'
+        pers.save()
+    #print list(collection.Ad.find())      
+    return "Added"
+
 @app.route("/login")
 def loginPage(): #login page rendered
     return render_template("login.html")
-    #return "Hello World!"
 
 @app.route("/signup")
 def signup(): #sign up page rendered
     return render_template("signup.html")
-    #return "Hello World!"
 
 @app.route('/log', methods=['POST'])
 def newUser(): #make a session for the user who logs in
@@ -101,6 +112,7 @@ def newUser(): #make a session for the user who logs in
         session['username']=email
     except:
         print sys.exc_info()[0]
+    #print "session",session
     if curUser:
         print "found",curUser['email'],curUser['password']
         return redirect('/userinfo')
@@ -127,57 +139,38 @@ def add(): #add a new user redirected from sign up
     
 @app.route('/userinfo',methods=['GET','POST'])
 def userinfo(): 
-    print "hello! in userinfo"
-
     d={}
     try:
         connection.register([UserDetails])	
         collection = connection['test1'].userdetails
         user1 = collection.UserDetails()
         record=collection.find_one({'email':session['username']}) #some email value)
-        print "bitch",record
+        print "session",session
     except:
-        print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+        print "hee:",sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
     if record :
         try:
-            record.name = request.form['name']
-            #record.email = request.form.get['email']
-            record.ssn = request.form['ssn']
-            record.location = request.form['location']
-            d.update({"name":record.name},{"mail":session['username']},{"ssn":record.ssn},{"location":record.location})
+            record['name'] = request.form['name']
+            record['ssn'] = request.form['ssn']
+            record['location'] = request.form['location']
+            d.update({"name":record['name'],"email":str(session['username']),"ssn":record['ssn'],"location":record['location']})
         except:
-            print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+            print "2:",sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
     else:
         try:
-            print "hiiiiiiii"
-            user1['name'] = u''
+            user1['name'] = ""
             user1['email'] = str(session['username'])
-            user1['location'] = u''
+            user1['location'] = ""
             user1['ssn'] = ""
             user1.save()
             print "added! to UserDetails"
-            d.update({"name":""},{"mail":session['username']},{"ssn":""},{"location":""})
+            d.update({"name":"","email":session['username'],"ssn":"","location":""})
         except:
-            print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
-            #pass
-        #d.update({name"})    
+            print "3:",sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]   
     context=d
     print context
     return render_template("display.html",**context)
 
-    
-@app.route("/read")
-def displayPersons():
-    # register the User document with our current connection
-    connection.register([Ad])
-    collection = connection['test1'].ads
-    ad1 = collection.Ad()
-    ad1['AdName'] = u'Nirma'
-    ad1['email'] = u'admin@localhost'
-    ad1.save()
-    print ad1
-    #print list(collection.Ad.find())      
-    return "added"
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -200,5 +193,76 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+
+@app.route("/imgRetrieve")
+def renderImage():
+    try:
+        return send_file(imagepath)
+    except:
+        print "img",sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]   
+        
+@app.route("/videoRetrieve")
+def renderVideo():
+    try:
+        return send_file(videopath)
+    except:
+        print "video",sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]      
+
+@app.route("/encrypt") 
+def encryptImage():
+    try:
+        image = open(imagepath,"rb")
+        plaintext = image.read()
+        print "encrypting.." 
+        cipher = enc_input(plaintext)
+        dec = dec_input(cipher)
+        print dec
+        f= open('dec', 'w')
+        f.write(dec)
+        f.close()    
+    except: 
+        print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]            
+    return "success"    
+
+def enc_input(data):
+
+    plaintext = data
+    cbc_key = ecb_key
+    iv = "A" * 16
+    try:
+        encryptor = AES.new(cbc_key, AES.MODE_CBC, iv)
+        #print "yo, " + plaintext
+        padded_plaintext = pkcs7_pad(plaintext)
+        return encryptor.encrypt(padded_plaintext)
+    except:
+        print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+
+
+def dec_input(data):
+    iv = "A" * 16
+    cbc_key = ecb_key
+    decryptor = AES.new(cbc_key, AES.MODE_CBC, iv)
+    padded_plaintext = decryptor.decrypt(data)
+    plaintext = pkcs7_unpad(padded_plaintext)
+    return plaintext
+
+def pkcs7_pad(text, block_size=16):
+    """
+    performs a pkcs#7 padding and returns the modified text with
+    appropriate padding bytes added
+    """
+    size = len(text)
+    padding_len = (block_size - (size % block_size))  
+    return text + chr(padding_len) * padding_len
+
+
+def pkcs7_unpad(text):
+    """
+        This function assumes that a PKCS#7 padding was already used on text
+        and strips the padding bytes in order to return the original data
+    """
+    return text[0: -ord(text[-1])]
+
+
 if __name__ == "__main__":
     app.run()
