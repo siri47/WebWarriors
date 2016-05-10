@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get 'data/write'
 
   get 'data/read'
-
+  
   #get 'person/new'
 
   #get 'person/create'
@@ -26,6 +26,10 @@ Rails.application.routes.draw do
   get 'upload/newvideo'
   
   post 'upload/upvideo'
+
+  get 'upload/encrypt'
+
+  get 'upload/decrypt'
 
   #get 'sessions/new'
 

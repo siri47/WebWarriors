@@ -1,4 +1,15 @@
+require 'openssl'
+require 'fileutils'
+
 class UploadController < ApplicationController
+
+    @@shared_key_size = 0x80
+    @@shared_block_size = 16
+    @@shared_key = OpenSSL::Random.random_bytes(@@shared_block_size)
+    @@shared_iv = OpenSSL::Random.random_bytes(@@shared_block_size)
+
+  @@tmp_path = "//tmp"
+
   def newimage
     @var = "WELCOME TO UPLOAD IMAGE"
   end
@@ -9,7 +20,7 @@ class UploadController < ApplicationController
 
     my_file = File.open(uploaded_io.path)
     uploader.store!(my_file)
-
+    @path = uploaded_io.path
     @image = name uploader.current_path.to_s
   end
 
@@ -27,8 +38,111 @@ class UploadController < ApplicationController
     @video = name uploader.current_path.to_s
   end
 
+  def encrypt
+    begin
+      entries = Dir.glob("#{@@tmp_path}/*")
+      entries.each do |entry|
+        if entry.include? ".jpg" or entry.include? ".png"
+          data = File.open(entry, "r") {|file| file.read() }
+          cipher = aes_encrypt(data, 1, "")
+          # remove old file
+          FileUtils.rm(entry)
+          # write ciphertext
+          File.open(entry, "wb") {|file| file.write(cipher) }
+        end
+      end
+    rescue
+
+    end
+    @success = true
+  end
+
+  def decrypt
+    begin
+      entries = Dir.glob("#{@@tmp_path}/*")
+      entries.each do |entry|
+        if entry.include? ".jpg" or entry.include? ".png"
+          data = File.binread(entry)
+          plaintext = aes_decrypt(data, 1, "")
+          # remove old file
+          FileUtils.rm(entry)
+          # write plaintext
+          File.open(entry, "wb") {|file| file.write(plaintext) }
+        end
+      end
+    rescue
+
+    end
+    @success = true
+  end
+
+  private
+
+
+    # implement pkcs#7 padding for string class
+    def pkcs7_pad(data, bsize = 16)
+        size = data.bytes.length
+        bself = data.bytes
+        pad_size = bsize - (size % bsize)
+        pad_size.times { bself.push(pad_size)}
+        return bself.pack("C*")
+    end
+
+    # implement unpadding logic for the string class
+    def pkcs7_unpad(data, bsize = 16)
+        bself = data.bytes
+        last = bself[-1]
+        return bself[0..-last-1].pack("C*")
+    end 
+    
+       # AES oracle that encrypts under ECB/CBC
+    def aes_encrypt(plaintext, mode, key)
+        if mode == 0
+            cipher = OpenSSL::Cipher::AES.new(@@shared_key_size, :ECB)
+            cipher.padding = 0
+        else
+            cipher = OpenSSL::Cipher.new('aes-256-cbc')
+            cipher.iv = @@shared_iv
+            padded_plaintext = pkcs7_pad(plaintext)
+            cipher.padding = 0
+        end
+        cipher.encrypt
+        cipher.key = @@shared_key+@@shared_key 
+        if key.length > 0
+            cipher.key = key
+        end
+        return cipher.update(padded_plaintext) + cipher.final
+    end
+
+    # AES oracle that decrypts under ECB/CBC
+    def aes_decrypt(ciphertext, mode, key)
+        if mode == 0
+            cipher = OpenSSL::Cipher::AES.new(@@shared_key_size, :ECB)
+            cipher.padding = 0
+        else
+            cipher = OpenSSL::Cipher.new('aes-256-cbc')
+            cipher.iv = @@shared_iv
+            cipher.padding = 0
+            #puts "dec length: #{ciphertext.length}"
+        end
+        cipher.decrypt
+        cipher.key = @@shared_key + @@shared_key
+        if key.length > 0
+            cipher.key = key
+        end
+        deciphered_text = cipher.update(ciphertext) + cipher.final
+        #puts "dec: #{deciphered_text}"
+        return pkcs7_unpad(deciphered_text)
+    end
+
+
 end
 private
 def name(filename)
   filename.split("/").last
 end
+
+
+
+
+
