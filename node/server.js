@@ -26,13 +26,13 @@ var dbUrl       = "mongodb://somdeep:root@ds041861.mlab.com:41861/warrior";
 
     app.get('/image', function(req, res){
 
-     res.sendfile('mkdir.png');
+     res.redirect('mkdir.png');
 
  });
 
     app.get('/video', function(req, res){
 
-     res.sendFile('football.mp4');
+     res.redirect('video.mp4');
 
  });
 
