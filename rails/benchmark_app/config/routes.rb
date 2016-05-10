@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   get 'upload/serveimages'
 
+  get 'upload/servevideos'
+
   post 'upload/upimage'
   
   get 'upload/newvideo'
@@ -30,8 +32,6 @@ Rails.application.routes.draw do
   post 'upload/upvideo'
 
   get 'upload/encrypt'
-
-  get 'upload/decrypt'
 
   #get 'sessions/new'
 
