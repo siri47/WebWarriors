@@ -2,8 +2,9 @@
 <?php
 
 require_once __DIR__ . "/vendor/autoload.php";
-	  $m = new MongoDB\Client("mongodb://somdeep:root@ds041861.mlab.com:41861/warrior");
-   
+	  //$m = new MongoDB\Client("mongodb://somdeep:root@ds041861.mlab.com:41861/warrior");
+      $m = new MongoDB\Client("mongodb://127.0.0.1:27017/warrior");
+
    
    $db=$m->warrior;
    
