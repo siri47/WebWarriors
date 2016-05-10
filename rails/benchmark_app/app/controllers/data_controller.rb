@@ -9,9 +9,9 @@ class DataController < ApplicationController
   	# compute count dump objects
   	count.times do |i|
   		params[:dump] = Dump.new
-  		params[:dump][:name] = get_random 10
-  		params[:dump][:email] = get_random 10
-  		params[:dump][:location] = get_random 10
+  		params[:dump][:name] = "morpheus"
+  		params[:dump][:email] = "morpheus5249@gmail.com"
+  		params[:dump][:location] = "New York City!"
   		@dumps.push(params[:dump])
   	end
   	# write each dump to the mongodb

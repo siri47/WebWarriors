@@ -38,6 +38,11 @@ class UploadController < ApplicationController
     @video = name uploader.current_path.to_s
   end
 
+  def serveimages
+    img_path = "/home/ubuntu/software/WebWarriors/rails/benchmark_app/app/assets/images/mkdir.png"
+    send_file img_path, type: 'image/png', disposition: 'inline'
+  end
+
   def encrypt
     begin
       entries = Dir.glob("#{@@tmp_path}/*")

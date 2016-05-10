@@ -21,8 +21,10 @@ Rails.application.routes.draw do
   #get 'person/get'
   get 'upload/newimage'
 
-  post 'upload/upimage'
+  get 'upload/serveimages'
 
+  post 'upload/upimage'
+  
   get 'upload/newvideo'
   
   post 'upload/upvideo'
