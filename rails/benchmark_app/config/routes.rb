@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   get 'upload/serveimages'
 
+  get 'upload/servevideos'
+
   post 'upload/upimage'
   
   get 'upload/newvideo'

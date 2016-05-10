@@ -43,6 +43,11 @@ class UploadController < ApplicationController
     send_file img_path, type: 'image/png', disposition: 'inline'
   end
 
+  def servevideos
+    vid_path = "/home/ubuntu/software/WebWarriors/rails/benchmark_app/app/assets/sample.mp4"
+    send_file vid_path, type: 'video/mp4', disposition: 'inline'
+  end
+
   def encrypt
       filename = "/home/ubuntu/software/WebWarriors/rails/benchmark_app/app/assets/images/mkdir.png"
       data = File.open(filename, "r") {|file| file.read() }
