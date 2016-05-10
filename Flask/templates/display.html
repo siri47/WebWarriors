@@ -1,0 +1,23 @@
+<html>
+<head>
+
+</head>
+<body class = entries>
+  {% if error %}
+      <p><strong>{{error}}</strong></p>
+  {% endif %}
+   
+    <p>Name : {{name}}</p>
+    <p>Email : {{mail}}</p>
+    <p>Location : {{location}}</p>
+    <p>SSN : {{ssn}}</p>   
+  <form method="post" action="userinfo">
+  Name  <input type="text" name="name" required />
+  Location  <input type="text" name="location" required />
+  SSN <input type="text" name="ssn" required />
+
+    </select>
+    <input type="submit">
+  </form>
+</body>
+</html>

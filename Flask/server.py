@@ -1,9 +1,9 @@
 
 from flask import Flask,request, render_template, g, session,redirect, Response
 from mongokit import Connection, Document
-import os
+import os,sys
 from flask import Flask, request, redirect, url_for
-#from werkzeug import secure_filename
+from werkzeug import secure_filename
 
 UPLOAD_FOLDER = '/Users/Siri/Documents/cn'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -12,6 +12,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = os.urandom(24)
 
 # configuration
 MONGODB_HOST = 'localhost'
@@ -24,6 +25,15 @@ app.config.from_object(__name__)
 connection = Connection(app.config['MONGODB_HOST'],
                         app.config['MONGODB_PORT'])
 
+"""@app.before_request
+def before_request():
+    g.db = connect_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()"""
 
 def max_length(length):
     def validate(value):
@@ -31,21 +41,6 @@ def max_length(length):
             return True
         raise Exception('%s must be at most %s characters long' % length)
     return validate
-
-class Ad(Document):
-    structure = {
-        'AdName': unicode,
-        'tagline': unicode,
-        'product':unicode,
-        'email': unicode,
-    }
-    validators = {
-        'AdName': max_length(50),
-        'email': max_length(120)
-    }
-    use_dot_notation = True
-    def __repr__(self):
-        return '<User %r>' % (self.AdName)
     
 
 class Person(Document):
@@ -58,26 +53,120 @@ class Person(Document):
     def __repr__(self):
         return '<User %r>' % (self.Name)
 
+#Schema for security form
+class UserDetails(Document):
+    structure = {
+        'name': unicode,
+        'email': basestring,
+        'location':unicode,
+        'ssn' : basestring,
+    }
+    use_dot_notation = True
+    def __repr__(self):
+        return '<User %r>' % (self.Name)
 
+class webUser(Document):
+    structure = {
+        'Name': unicode,
+        'email': unicode,
+        'password': unicode,
+    }
+    use_dot_notation = True
+    def __repr__(self):
+        return '<User %r>' % (self.Name)
+    
 @app.route("/")
 def hello():
     return "Hello World!"
 
 @app.route("/login")
-def loginPage():
+def loginPage(): #login page rendered
     return render_template("login.html")
     #return "Hello World!"
 
 @app.route("/signup")
-def signup():
+def signup(): #sign up page rendered
     return render_template("signup.html")
     #return "Hello World!"
+
+@app.route('/log', methods=['POST'])
+def newUser(): #make a session for the user who logs in
+    #print "please"
+    email = request.form['email']
+    password = request.form['password'] 
+    connection.register([webUser])
+    collection = connection['test1'].webusers
+    curUser=collection.find_one({'email': email,'password':password})
+    try:
+        session['username']=email
+    except:
+        print sys.exc_info()[0]
+    if curUser:
+        print "found",curUser['email'],curUser['password']
+        return redirect('/userinfo')
+    else:
+        #context=dict(error1="User not Found!")
+        return render_template("signup.html",error="User not found, please sign up!")
+    
+@app.route('/new', methods=['POST'])
+def add(): #add a new user redirected from sign up
+    print "please"
+    name = request.form['name']
+    email = request.form['email']
+    password = request.form['password'] 
+    connection.register([webUser])
+    collection = connection['test1'].webusers
+    user = collection.webUser()
+    user['Name'] = name
+    user['email'] = email
+    user['password'] = password
+    print "added!",name,email
+    user.save()
+    #session['username']=email
+    return redirect('/login')
     
 @app.route('/userinfo',methods=['GET','POST'])
-def userinfo():
-    return render_template("details.html")
+def userinfo(): 
+    print "hello! in userinfo"
+
+    d={}
+    try:
+        connection.register([UserDetails])	
+        collection = connection['test1'].userdetails
+        user1 = collection.UserDetails()
+        record=collection.find_one({'email':session['username']}) #some email value)
+        print "bitch",record
+    except:
+        print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+    if record :
+        try:
+            record.name = request.form['name']
+            #record.email = request.form.get['email']
+            record.ssn = request.form['ssn']
+            record.location = request.form['location']
+            d.update({"name":record.name},{"mail":session['username']},{"ssn":record.ssn},{"location":record.location})
+        except:
+            print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+    else:
+        try:
+            print "hiiiiiiii"
+            user1['name'] = u''
+            user1['email'] = str(session['username'])
+            user1['location'] = u''
+            user1['ssn'] = ""
+            user1.save()
+            print "added! to UserDetails"
+            d.update({"name":""},{"mail":session['username']},{"ssn":""},{"location":""})
+        except:
+            print sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2]
+            #pass
+        #d.update({name"})    
+    context=d
+    print context
+    return render_template("display.html",**context)
+
     
-@app.route("/data/read")
+@app.route("/read")
 def displayPersons():
     # register the User document with our current connection
     connection.register([Ad])
