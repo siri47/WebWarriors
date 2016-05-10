@@ -6,7 +6,8 @@
   {% if error %}
       <p><strong>{{error}}</strong></p>
   {% endif %}
-  <form method="post" action="/userinfo">
+  <h1> Existing user log in </h1>
+  <form method="post" action="/log">
   Email <input type="email" name="email" required/>
   Password    <input type="password" name="password" required/>
     <input type="submit">
