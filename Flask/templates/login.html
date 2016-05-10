@@ -1,0 +1,16 @@
+<html>
+<head>
+
+</head>
+<body>
+  {% if error %}
+      <p><strong>{{error}}</strong></p>
+  {% endif %}
+  <form method="post" action="/userinfo">
+  Email <input type="email" name="email" required/>
+  Password    <input type="password" name="password" required/>
+    <input type="submit">
+  </form>
+</body>
+
+</html>
