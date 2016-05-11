@@ -2,7 +2,7 @@ require 'mongo'
 
 class DataController < ApplicationController
   def write
-  	count = 100
+  	count = 10000
   	count = params[:count].to_i unless params[:count] == nil
   	@dumps = []	
   	@cnt = count
