@@ -100,4 +100,4 @@ The essential steps involved in running and testing this application  are as fol
 
 ## Eventual Results
 
-![img](C:\Users\Somdeep\Desktop\comparison.png)
+![comparison.png](https://github.com/siri47/WebWarriors/blob/master/comparison.png?raw=true)
