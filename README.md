@@ -1,3 +1,57 @@
+# WebWarriors	
+
+***Web-app framework comparison***
+
+
+
+## Team
+
+- Aishwarya Iyer
+- Kavya Premkumar
+- Rohit Gurunath
+- Siri Haricharan
+- Somdeep Dey
+
+
+
+## Sample Framework and App Setup : Ruby on Rails
+
+
+
+![img](http://thenextweb.com/wp-content/blogs.dir/1/files/2015/02/CoM_Stuk.io-Ruby-on-Rails1.jpg)
+
+
+
+#### Basic Setup
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Project Overview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ideas: Ad website
 
 User will login
@@ -13,7 +67,7 @@ View ads
 Search by name/title
 
 Possibly buy item through payment api
-	
+​	
 
 
 Test Suite:
